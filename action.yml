@@ -26,6 +26,7 @@
       polling_interval:
         description: 'Interval to poll for result'
         required: false
+        default: '45'
 
   runs:
       image: "Dockerfile"
