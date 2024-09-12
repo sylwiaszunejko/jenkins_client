@@ -27,6 +27,11 @@
         description: 'Interval to poll for result'
         required: false
         default: '45'
+      polling_timeout:
+        description: 'Timeout for polling for result in seconds'
+        required: false
+        default: '3600'
+
 
   runs:
       image: "Dockerfile"
@@ -36,6 +41,7 @@
           - ${{ inputs.jenkins_job_parameters }}
           - ${{ inputs.wait_for_result }}
           - ${{ inputs.polling_interval }}
+          - ${{ inputs.polling_timeout }}
           - --jenkins_base_url=${{ inputs.jenkins_base_url }}
           - --jenkins_user=${{ inputs.jenkins_user }}
           - --jenkins_password=${{ inputs.jenkins_password }}

@@ -22,7 +22,6 @@ class JenkinsClient:
         jenkins_password=os.getenv("JENKINS_PASSWORD"),
         queue_poll_interval=2,
         queue_max_timeout=500,
-        overall_max_timeout=3600,
     ):
         if jenkins_base_url is None:
             raise AttributeError("JENKINS_BASE_URL is not set. Please provide Jenkins base URL.")
@@ -30,14 +29,13 @@ class JenkinsClient:
         self._jenkins = Jenkins(jenkins_base_url, username=jenkins_user, password=jenkins_password)
         self.queue_poll_interval = queue_poll_interval
         self.queue_max_timeout = queue_max_timeout
-        self.overall_max_timeout = overall_max_timeout
 
     def list_jobs(self) -> list:
         """List all the available jobs of the Jenkins instance"""
         job_names_list = [item[0] for item in self._jenkins.items()]
         return job_names_list
 
-    def start_job(self, job_name: str, params: dict = None, wait_for_result: bool = True, polling_interval: int = 20):
+    def start_job(self, job_name: str, params: dict = None, wait_for_result: bool = True, polling_interval: int = 20, polling_timeout: int = 3600):
         """Start a job and poll it until it's over or timed out."""
         if params is not None and type(params) is not dict:
             print(type(params))
@@ -64,7 +62,7 @@ class JenkinsClient:
             f"Estimated duration -> {str(datetime.timedelta(seconds=build.get_estimated_duration())).split('.')[0]}"
         )
         if wait_for_result:
-            self._poll_build_for_status(build, polling_interval=polling_interval)
+            self._poll_build_for_status(build, polling_interval=polling_interval, polling_timeout=polling_timeout)
 
     def _poll_job_queue(self, queue_item: QueueItem):
         elapsed_time = 0
@@ -81,7 +79,7 @@ class JenkinsClient:
             if elapsed_time > self.queue_max_timeout:
                 raise Exception("Max time out for queue reached!")
 
-    def _poll_build_for_status(self, build: Build, polling_interval):
+    def _poll_build_for_status(self, build: Build, polling_interval, polling_timeout):
         start_epoch = int(time.time())
 
         while True:
@@ -102,8 +100,8 @@ class JenkinsClient:
                 )
 
             cur_epoch = int(time.time())
-            if (cur_epoch - start_epoch) > self.overall_max_timeout:
-                logging.info(f"Overall timeout: No status before timeout of {self.overall_max_timeout} secs")
+            if (cur_epoch - start_epoch) > polling_timeout:
+                logging.info(f"Overall timeout: No status before timeout of {polling_timeout} secs")
                 sys.exit(1)
 
             time.sleep(polling_interval)
