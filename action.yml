@@ -31,6 +31,10 @@
         description: 'Timeout for polling for result in seconds'
         required: false
         default: '3600'
+      queue_max_timeout:
+        description: 'Timeout for waiting in the job queue'
+        required: false
+        default: '500'
 
 
   runs:
@@ -42,6 +46,7 @@
           - ${{ inputs.wait_for_result }}
           - ${{ inputs.polling_interval }}
           - ${{ inputs.polling_timeout }}
+          - ${{ inputs.queue_max_timeout }}
           - --jenkins_base_url=${{ inputs.jenkins_base_url }}
           - --jenkins_user=${{ inputs.jenkins_user }}
           - --jenkins_password=${{ inputs.jenkins_password }}

@@ -34,6 +34,7 @@ The action parameters are the following:
 | `wait_for_result` | No | If set to true, the action will wait for the job to finish _(default: True)_ |
 | `polling_interval` | No | The interval between polling for result in seconds _(default: 45)_ |
 | `polling_timeout` | No | The timeout for the polling jenkins for the result in second _(default: 3600)_ |
+| `queue_max_timeout` | No | The timeout for waiting in the job queue _(default: 500)_ |
 
 **Note**
 `jenkins_job_parameters` and `wait_for_result` should be quoted as in the example below.
@@ -55,6 +56,7 @@ jobs:
           wait_for_result: 'False'
           polling_interval: '60'
           polling_timeout: '4000'
+          queue_max_timeout: '1000'
 ```
 
 ###### Contact QA team in order to add more actions to the package.

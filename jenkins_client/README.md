@@ -17,6 +17,6 @@ jc = JenkinsClient(jenkins_base_url="https://my-jenkins-instance.com",
                    username="auto",
                    password=*****)
 
-jc.start_job(job_name, params, wait_for_result, polling_interval, polling_timeout) # params must be a python dictionary
+jc.start_job(job_name, params, wait_for_result, polling_interval, polling_timeout, queue_max_timeout) # params must be a python dictionary
 ~~~
 _`job_name` parameter is required, the rest are optional._
